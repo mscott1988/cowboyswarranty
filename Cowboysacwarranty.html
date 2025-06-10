@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cowboys AC Warranty Form</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      background: #0B1F3A;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+    img.logo {
+      display: block;
+      margin: auto;
+      max-width: 200px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img src="https://cowboysac.com/wp-content/uploads/2025/06/color-logo-scaled-2-1.webp" alt="Cowboys AC Logo" class="logo">
+    <h2>Warranty Submission Form</h2>
+    <form id="warrantyForm">
+      <label>Employee Name <input type="text" name="employee"></label>
+      <label>Install Date <input type="date" name="installDate"></label>
+      <label>Job # <input type="text" name="jobNumber"></label>
+      <label>Customer Name <input type="text" name="customerName"></label>
+      <label>Customer Address <input type="text" name="customerAddress"></label>
+      <label>Model # <input type="text" name="model"></label>
+      <label>Serial # <input type="text" name="serial"></label>
+      <label>Brand <input type="text" name="brand"></label>
+      <label>Reason <textarea name="reason"></textarea></label>
+      <button type="button" onclick="generatePDF()">Submit & Generate PDF</button>
+    </form>
+  </div>
+
+  <script>
+    async function generatePDF() {
+      const { jsPDF } = window.jspdf;
+      const form = document.forms['warrantyForm'];
+
+      const doc = new jsPDF();
+      const logo = new Image();
+      logo.crossOrigin = "anonymous";
+      logo.src = 'https://cowboysac.com/wp-content/uploads/2025/06/color-logo-scaled-2-1.webp';
+
+      logo.onload = () => {
+        doc.addImage(logo, 'WEBP', 15, 10, 50, 20);
+        doc.setFontSize(16);
+        doc.text("Warranty Submission Form", 70, 25);
+        doc.setFontSize(12);
+
+        const entries = [
+          ['Employee Name', form.employee.value],
+          ['Install Date', form.installDate.value],
+          ['Job #', form.jobNumber.value],
+          ['Customer Name', form.customerName.value],
+          ['Customer Address', form.customerAddress.value],
+          ['Model #', form.model.value],
+          ['Serial #', form.serial.value],
+          ['Brand', form.brand.value],
+          ['Reason', form.reason.value],
+        ];
+
+        let y = 40;
+        entries.forEach(([label, value]) => {
+          doc.text(`${label}:`, 15, y);
+          doc.text(value || '-', 60, y);
+          y += 10;
+        });
+
+        doc.setFontSize(10);
+        doc.text("\u00A9 2025 Cowboys AC – Property of CowboysAC.com. Confidential – Intended solely for the recipient.", 15, 280);
+
+        doc.save(`Warranty-${form.jobNumber.value || 'Form'}.pdf`);
+
+        alert("PDF generated. Please email it manually to warehouse@cowboysac.com or set up auto-email script.");
+      };
+    }
+  </script>
+</body>
+</html>
